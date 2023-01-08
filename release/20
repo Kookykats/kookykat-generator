@@ -1,0 +1,42 @@
+{
+  "name": "KookyKats #20",
+  "description": "This is the description of your NFT project, remember to replace this",
+  "image": "ipfs://QmUpvhcZ8UJZLqFAZqLqUhWHq5upjdMfz3o1c1d453uj3Q/20.png",
+  "imageHash": "852166b4e58adce6588e9afd6493e2a0143e2ef6c84992187da001bb80e62f24",
+  "edition": 20,
+  "date": 1669939823190,
+  "attributes": [
+    {
+      "trait_type": "Background",
+      "value": "City"
+    },
+    {
+      "trait_type": "Wings",
+      "value": "No Wing"
+    },
+    {
+      "trait_type": "Fur Color",
+      "value": "Tribal"
+    },
+    {
+      "trait_type": "Clothes",
+      "value": "Farmer"
+    },
+    {
+      "trait_type": "Eyes",
+      "value": "Sleepy"
+    },
+    {
+      "trait_type": "Mouth",
+      "value": "Missing Tooth"
+    },
+    {
+      "trait_type": "Hats",
+      "value": "No Hat"
+    },
+    {
+      "trait_type": "Accessories",
+      "value": "Broomstick"
+    }
+  ]
+}

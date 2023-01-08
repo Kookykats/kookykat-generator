@@ -1,0 +1,42 @@
+{
+  "name": "KookyKats #1",
+  "description": "This is the description of your NFT project, remember to replace this",
+  "image": "ipfs://QmUpvhcZ8UJZLqFAZqLqUhWHq5upjdMfz3o1c1d453uj3Q/1.png",
+  "imageHash": "76a78eef76263e007f6ca84fecf52f15d249463c85bcf61f87d251fb89ff211e",
+  "edition": 1,
+  "date": 1669939821974,
+  "attributes": [
+    {
+      "trait_type": "Background",
+      "value": "Beige"
+    },
+    {
+      "trait_type": "Wings",
+      "value": "No Wing"
+    },
+    {
+      "trait_type": "Fur Color",
+      "value": "Mold Green"
+    },
+    {
+      "trait_type": "Clothes",
+      "value": "Yellow Tee"
+    },
+    {
+      "trait_type": "Eyes",
+      "value": "Sleepy"
+    },
+    {
+      "trait_type": "Mouth",
+      "value": "Tongue Out"
+    },
+    {
+      "trait_type": "Hats",
+      "value": "Bow"
+    },
+    {
+      "trait_type": "Accessories",
+      "value": "Kebab"
+    }
+  ]
+}

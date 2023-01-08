@@ -1,0 +1,42 @@
+{
+  "name": "KookyKats #44",
+  "description": "This is the description of your NFT project, remember to replace this",
+  "image": "ipfs://QmUpvhcZ8UJZLqFAZqLqUhWHq5upjdMfz3o1c1d453uj3Q/44.png",
+  "imageHash": "071e80e6d81481a3c7fa4d1638f998b87df1ad82f5313a33c97b38bdcb734c00",
+  "edition": 44,
+  "date": 1669939824901,
+  "attributes": [
+    {
+      "trait_type": "Background",
+      "value": "Clouds"
+    },
+    {
+      "trait_type": "Wings",
+      "value": "No Wing"
+    },
+    {
+      "trait_type": "Fur Color",
+      "value": "Apricot"
+    },
+    {
+      "trait_type": "Clothes",
+      "value": "Scarf"
+    },
+    {
+      "trait_type": "Eyes",
+      "value": "Hearts"
+    },
+    {
+      "trait_type": "Mouth",
+      "value": "Wide Grin"
+    },
+    {
+      "trait_type": "Hats",
+      "value": "Arrow Head"
+    },
+    {
+      "trait_type": "Accessories",
+      "value": "Earrings"
+    }
+  ]
+}

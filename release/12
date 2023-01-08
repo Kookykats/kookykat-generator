@@ -1,0 +1,42 @@
+{
+  "name": "KookyKats #12",
+  "description": "This is the description of your NFT project, remember to replace this",
+  "image": "ipfs://QmUpvhcZ8UJZLqFAZqLqUhWHq5upjdMfz3o1c1d453uj3Q/12.png",
+  "imageHash": "7cf0c32af503f2a33f43afcff01f0d11ce6fa51e461c9c587da54f30f171e0b3",
+  "edition": 12,
+  "date": 1669939822684,
+  "attributes": [
+    {
+      "trait_type": "Background",
+      "value": "Purple"
+    },
+    {
+      "trait_type": "Wings",
+      "value": "No Wing"
+    },
+    {
+      "trait_type": "Fur Color",
+      "value": "Tribal"
+    },
+    {
+      "trait_type": "Clothes",
+      "value": "Wifebeater"
+    },
+    {
+      "trait_type": "Eyes",
+      "value": "Derpy"
+    },
+    {
+      "trait_type": "Mouth",
+      "value": "Drool"
+    },
+    {
+      "trait_type": "Hats",
+      "value": "Mouse"
+    },
+    {
+      "trait_type": "Accessories",
+      "value": "Tennis Racket"
+    }
+  ]
+}

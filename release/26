@@ -1,0 +1,42 @@
+{
+  "name": "KookyKats #26",
+  "description": "This is the description of your NFT project, remember to replace this",
+  "image": "ipfs://QmUpvhcZ8UJZLqFAZqLqUhWHq5upjdMfz3o1c1d453uj3Q/26.png",
+  "imageHash": "cd7cf9f4a1474d3fb9e47cafe5f9d6fba59249abea8a3ac425f39aab81ef9ccc",
+  "edition": 26,
+  "date": 1669939823685,
+  "attributes": [
+    {
+      "trait_type": "Background",
+      "value": "CandyFloss"
+    },
+    {
+      "trait_type": "Wings",
+      "value": "No Wing"
+    },
+    {
+      "trait_type": "Fur Color",
+      "value": "Ice Blue"
+    },
+    {
+      "trait_type": "Clothes",
+      "value": "Blue Tee"
+    },
+    {
+      "trait_type": "Eyes",
+      "value": "Derpy"
+    },
+    {
+      "trait_type": "Mouth",
+      "value": "Drool"
+    },
+    {
+      "trait_type": "Hats",
+      "value": "No Hat"
+    },
+    {
+      "trait_type": "Accessories",
+      "value": "Nose Ring"
+    }
+  ]
+}

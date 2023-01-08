@@ -1,0 +1,42 @@
+{
+  "name": "KookyKats #38",
+  "description": "This is the description of your NFT project, remember to replace this",
+  "image": "ipfs://QmUpvhcZ8UJZLqFAZqLqUhWHq5upjdMfz3o1c1d453uj3Q/38.png",
+  "imageHash": "fe690c0661e5c97bee40b5f5d5a5beaa68d6405fb3959f335bcdc0a4397b54c6",
+  "edition": 38,
+  "date": 1669939824497,
+  "attributes": [
+    {
+      "trait_type": "Background",
+      "value": "CandyFloss"
+    },
+    {
+      "trait_type": "Wings",
+      "value": "No Wing"
+    },
+    {
+      "trait_type": "Fur Color",
+      "value": "Tribal"
+    },
+    {
+      "trait_type": "Clothes",
+      "value": "Kooky Spring"
+    },
+    {
+      "trait_type": "Eyes",
+      "value": "Hypno"
+    },
+    {
+      "trait_type": "Mouth",
+      "value": "Tongue Out"
+    },
+    {
+      "trait_type": "Hats",
+      "value": "Ciggy"
+    },
+    {
+      "trait_type": "Accessories",
+      "value": "Tennis Racket"
+    }
+  ]
+}

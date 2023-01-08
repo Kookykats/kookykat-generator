@@ -1,82 +1,189 @@
-const basePath = process.cwd();
+"use strict";
+
+const path = require("path");
+const createCsvWriter = require("csv-writer").createObjectCsvWriter;
+
+const isLocal = typeof process.pkg === "undefined";
+const basePath = isLocal ? process.cwd() : path.dirname(process.execPath);
 const fs = require("fs");
-const layersDir = `${basePath}/layers`;
+// const layersDir = `${basePath}/layers`;
+const layersDir = path.join(basePath, "../", "genkiFiles");
 
-const { layerConfigurations } = require(`${basePath}/src/config.js`);
+const {
+  layerConfigurations,
+  extraAttributes,
+  rarityDelimiter,
+} = require(path.join(basePath, "/src/config.js"));
 
-const { getElements } = require("../src/main.js");
+const { getElements, cleanName } = require("../src/main.js");
+const metadataPath = path.join(basePath, "/build/json/_metadata.json");
 
-// read json data
-let rawdata = fs.readFileSync(`${basePath}/build/json/_metadata.json`);
-let data = JSON.parse(rawdata);
-let editionSize = data.length;
+function calculate(options = {}) {
+  let rarity = {};
+  let totals = {};
+  let attributeCounts = {};
 
-let rarityData = [];
+  const dataset = JSON.parse(fs.readFileSync(metadataPath)); // filter out .DS_Store
+  // .filter((item) => {
+  //   return !/(^|\/)\.[^\/\.]/g.test(item);
+  // });
+  dataset.forEach((metadata) => {
+    // const readData = fs.readFileSync(path.join(basePath, inputdir, file));
+    // const metadata = JSON.parse(readData);
+    // Push the attributes to the main counter and increment
+    metadata.attributes = metadata.attributes.filter(
+      (attr) => attr.value !== ""
+    );
 
-// intialize layers to chart
-layerConfigurations.forEach((config) => {
-  let layers = config.layersOrder;
+    // add a count to the attribue counts
+    attributeCounts[metadata.attributes.length] = attributeCounts[
+      metadata.attributes.length
+    ]
+      ? attributeCounts[metadata.attributes.length] + 1
+      : 1;
 
-  layers.forEach((layer) => {
-    // get elements for each layer
-    let elementsForLayer = [];
-    let elements = getElements(`${layersDir}/${layer.name}/`);
-    elements.forEach((element) => {
-      // just get name and weight for each element
-      let rarityDataElement = {
-        trait: element.name,
-        weight: element.weight.toFixed(0),
-        occurrence: 0, // initialize at 0
+    metadata.attributes.forEach((attribute) => {
+      rarity = {
+        ...rarity,
+        [attribute.trait_type]: {
+          ...rarity[attribute.trait_type],
+          [attribute.value]: {
+            count: rarity[attribute.trait_type]
+              ? rarity[attribute.trait_type][attribute.value]
+                ? rarity[attribute.trait_type][attribute.value].count + 1
+                : 1
+              : 1,
+          },
+        },
       };
-      elementsForLayer.push(rarityDataElement);
+
+      totals = {
+        ...totals,
+        [attribute.trait_type]: totals[attribute.trait_type]
+          ? (totals[attribute.trait_type] += 1)
+          : 1,
+      };
     });
-    let layerName =
-      layer.options?.["displayName"] != undefined
-        ? layer.options?.["displayName"]
-        : layer.name;
-    // don't include duplicate layers
-    if (!rarityData.includes(layer.name)) {
-      // add elements for each layer to chart
-      rarityData[layerName] = elementsForLayer;
+  });
+
+  // loop again to write percentages based on occurrences/ total supply
+  for (const category in rarity) {
+    for (const element in rarity[category]) {
+      rarity[category][element].percentage = (
+        (rarity[category][element].count / dataset.length) *
+        100
+      ).toFixed(4);
     }
+  }
+
+  // sort everything alphabetically (could be refactored)
+  for (let subitem in rarity) {
+    rarity[subitem] = Object.keys(rarity[subitem])
+      .sort()
+      .reduce((obj, key) => {
+        obj[key] = rarity[subitem][key];
+        return obj;
+      }, {});
+  }
+  const ordered = Object.keys(rarity)
+    .sort()
+    .reduce((obj, key) => {
+      obj[key] = rarity[key];
+      return obj;
+    }, {});
+
+  // append attribute count as a trait
+  ordered["Attribute Count"] = {};
+
+  for (const key in attributeCounts) {
+    console.log(`attributeCounts ${key}`);
+    ordered["Attribute Count"][`${key} Attributes`] = {
+      count: attributeCounts[key],
+      percentage: (attributeCounts[key] / dataset.length).toFixed(4) * 100,
+    };
+  }
+
+  // TODO: Calculate rarity score by looping through the set again
+  console.log({ count: dataset.length });
+
+  const tokenRarities = [];
+
+  dataset.forEach((metadata) => {
+    metadata.attributes = metadata.attributes.filter(
+      (attr) => attr.value !== ""
+    );
+
+    // look up each one in the rarity data, and sum it
+    const raritySum = metadata.attributes.reduce((sum, attribute) => {
+      return (
+        sum + Number(ordered[attribute.trait_type][attribute.value].percentage)
+      );
+    }, 0);
+
+    tokenRarities.push({ name: metadata.name, raritySum });
   });
-});
 
-// fill up rarity chart with occurrences from metadata
-data.forEach((element) => {
-  let attributes = element.attributes;
-  attributes.forEach((attribute) => {
-    let traitType = attribute.trait_type;
-    let value = attribute.value;
-
-    let rarityDataTraits = rarityData[traitType];
-    rarityDataTraits.forEach((rarityDataTrait) => {
-      if (rarityDataTrait.trait == value) {
-        // keep track of occurrences
-        rarityDataTrait.occurrence++;
-      }
-    });
+  tokenRarities.sort((a, b) => {
+    return a.raritySum - b.raritySum;
   });
-});
 
-// convert occurrences to occurence string
-for (var layer in rarityData) {
-  for (var attribute in rarityData[layer]) {
-    // get chance
-    let chance =
-      ((rarityData[layer][attribute].occurrence / editionSize) * 100).toFixed(2);
+  console.log(ordered);
+  console.log(attributeCounts);
+  outputRarityCSV(ordered);
 
-    // show two decimal places in percent
-    rarityData[layer][attribute].occurrence =
-      `${rarityData[layer][attribute].occurrence} in ${editionSize} editions (${chance} %)`;
+  // console.log(tokenRarities);
+  console.table(tokenRarities);
+  options.outputRanking ? outputRankingCSV(tokenRarities) : null;
+}
+
+/**
+ * converts the sorted rarity data objects into the csv output we are looking for
+ * @param {Array} rarityData all calculated usages and percentages
+ */
+async function outputRarityCSV(rarityData) {
+  const csvWriter = createCsvWriter({
+    path: path.join(basePath, "build/_rarity.csv"),
+    header: [
+      { id: "name", title: "Attribute" },
+      { id: "count", title: "Count" },
+      { id: "percentage", title: "Percentage" },
+    ],
+  });
+  // loop through the
+  for (const trait in rarityData) {
+    await csvWriter.writeRecords([
+      { name: "" },
+      {
+        name: trait,
+      },
+    ]);
+    console.log({ trait });
+    const rows = [];
+    for (const [key, value] of Object.entries(rarityData[trait])) {
+      rows.push({
+        name: key,
+        count: rarityData[trait][key].count,
+        percentage: rarityData[trait][key].percentage,
+      });
+    }
+    await csvWriter.writeRecords(rows);
+    console.log(rows);
   }
 }
 
-// print out rarity data
-for (var layer in rarityData) {
-  console.log(`Trait type: ${layer}`);
-  for (var trait in rarityData[layer]) {
-    console.log(rarityData[layer][trait]);
-  }
-  console.log();
+/**
+ * outputs a csv of ordered and ranked tokens by rarity score.
+ * @param {Array[Objects]} ranking sorted ranking data
+ */
+function outputRankingCSV(ranking) {
+  const csvWriter = createCsvWriter({
+    path: path.join(basePath, "build/_ranking.csv"),
+    header: [
+      { id: "name", title: "NAME" },
+      { id: "raritySum", title: "Rarity Sum" },
+    ],
+  });
+  csvWriter.writeRecords(ranking);
 }
+
+calculate({ outputRanking: true });
