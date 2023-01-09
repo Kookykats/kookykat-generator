@@ -63,6 +63,15 @@ const layerConfigurations = [
   },
 ];
 
+const backgroundMapping = {
+  "Backyard": "Cabin",
+  "Rainbow": "Colorful",
+  "Blue": "Cozy",
+  "City": "Dark",
+  "Space": "Void",
+  default: "Party"
+}
+
 /**
  * Set to true for when using multiple layersOrder configuration
  * and you would like to shuffle all the artwork together
@@ -168,5 +177,6 @@ module.exports = {
   traitValueOverrides,
   uniqueDnaTorrance,
   useRootTraitType,
-  prerevealDir
+  prerevealDir,
+  backgroundMapping
 };

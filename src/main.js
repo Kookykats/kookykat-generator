@@ -38,7 +38,8 @@ const {
   traitValueOverrides,
   uniqueDnaTorrance,
   useRootTraitType,
-  prerevealDir
+  prerevealDir,
+  backgroundMapping
 } = require(path.join(basePath, "/src/config.js"));
 const canvas = createCanvas(format.width, format.height);
 const ctxMain = canvas.getContext("2d");
@@ -329,23 +330,24 @@ const addMetadata = (_dna, _edition, _prefixData) => {
 const generatePrereveal = (_metadata, _edition, _prefixData, _dateTime) => {
   const { _prefix, _offset } = _prefixData;
   let background = _metadata.attributes.find(attr => attr.trait_type == "Background").value;
+  let prereveal = backgroundMapping[background] || backgroundMapping.default;
   let tempMetadata = {
     name: `${_prefix ? _prefix + " " : ""}#${_edition - _offset}`,
     description: PrerevealDescription,
-    image: `${prerevealBaseUri}/${_edition}${".png"}`,
+    image: `${prerevealBaseUri}/${_edition}${".gif"}`,
     edition: _edition,
     date: _dateTime,
     ...extraMetadata,
     attributes: [
       {
         trait_type: "Special Trait",
-        value: background
+        value: prereveal
       }
     ]
   };
   prereveal_meta.push(tempMetadata);
   prereveal_imgs.push({
-    image: `${background}.png`,
+    image: `${prereveal}.gif`,
     edition: _edition
   })
 }
@@ -765,7 +767,7 @@ const savePrerevealSingleFile = (_editionCount, _buildDir) => {
     `${_buildDir}/prereveal-json/${_editionCount}.json`,
     JSON.stringify(metadata, null, 2)
   );
-  fs.copyFileSync(`${prerevealDir}/${background}`, `${_buildDir}/prereveal-images/${_editionCount}.png`);
+  fs.copyFileSync(`${prerevealDir}/${background}`, `${_buildDir}/prereveal-images/${_editionCount}.gif`);
 };
 
 function shuffle(array) {
