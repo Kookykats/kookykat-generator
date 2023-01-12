@@ -10,6 +10,7 @@ const { MODE } = require(path.join(basePath, "src/blendMode.js"));
 
 const buildDir = path.join(basePath, "/build");
 const layersDir = path.join(basePath, "/layers");
+const prerevealDir = path.join(basePath, "/prereveal");
 
 const { incompatible, forcedCombinations, MAX_SUPPLY } = require('../constants')
 
@@ -19,7 +20,10 @@ const { incompatible, forcedCombinations, MAX_SUPPLY } = require('../constants')
 
 const description =
   "This is the description of your NFT project, remember to replace this";
+const PrerevealDescription =
+  "This is the description of your unrevealed NFT project, remember to replace this";
 const baseUri = "ipfs://NewUriToReplace";
+const prerevealBaseUri = "ipfs://NewPrerevealUriToReplace";
 
 const outputJPEG = false; // if false, the generator outputs png's
 
@@ -58,6 +62,15 @@ const layerConfigurations = [
     ],
   },
 ];
+
+const backgroundMapping = {
+  "Backyard": "Cabin",
+  "Rainbow": "Colorful",
+  "Blue": "Cozy",
+  "City": "Dark",
+  "Space": "Void",
+  default: "Party"
+}
 
 /**
  * Set to true for when using multiple layersOrder configuration
@@ -141,9 +154,11 @@ const preview_gif = {
 module.exports = {
   background,
   baseUri,
+  prerevealBaseUri,
   buildDir,
   debugLogs,
   description,
+  PrerevealDescription,
   emptyLayerName,
   extraAttributes,
   extraMetadata,
@@ -162,4 +177,6 @@ module.exports = {
   traitValueOverrides,
   uniqueDnaTorrance,
   useRootTraitType,
+  prerevealDir,
+  backgroundMapping
 };

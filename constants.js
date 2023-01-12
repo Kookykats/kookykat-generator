@@ -28,7 +28,7 @@ const forcedCombinations = {
   "Gold Armour": ["No Accessory"],
 };
 
-const MAX_SUPPLY = 8000
+const MAX_SUPPLY = 20
 
 const IMAGE_IPFS = 'QmUpvhcZ8UJZLqFAZqLqUhWHq5upjdMfz3o1c1d453uj3Q'
 

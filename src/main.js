@@ -17,9 +17,11 @@ console.log(path.join(basePath, "/src/config.js"));
 const {
   background,
   baseUri,
+  prerevealBaseUri,
   buildDir,
   debugLogs,
   description,
+  PrerevealDescription,
   emptyLayerName,
   extraAttributes,
   extraMetadata,
@@ -36,12 +38,16 @@ const {
   traitValueOverrides,
   uniqueDnaTorrance,
   useRootTraitType,
+  prerevealDir,
+  backgroundMapping
 } = require(path.join(basePath, "/src/config.js"));
 const canvas = createCanvas(format.width, format.height);
 const ctxMain = canvas.getContext("2d");
 ctxMain.imageSmoothingEnabled = format.smoothing;
 
 let metadataList = [];
+let prereveal_imgs = [];
+let prereveal_meta = [];
 let attributesList = [];
 
 // when generating a random background used to add to DNA
@@ -59,7 +65,9 @@ const buildSetup = () => {
   }
   fs.mkdirSync(buildDir);
   fs.mkdirSync(path.join(buildDir, "/json"));
-  fs.mkdirSync(path.join(buildDir, "/images"));
+  fs.mkdirSync(path.join(buildDir, "/images"));  
+  fs.mkdirSync(path.join(buildDir, "/prereveal-json"));
+  fs.mkdirSync(path.join(buildDir, "/prereveal-images"));
 };
 
 const getRarityWeight = (_path) => {
@@ -311,13 +319,38 @@ const addMetadata = (_dna, _edition, _prefixData) => {
     edition: _edition,
     date: dateTime,
     ...extraMetadata,
-    attributes: cleanedAttrs,
-    compiler: "HashLips Art Engine - NFTChef fork",
+    attributes: cleanedAttrs
   };
   metadataList.push(tempMetadata);
+  generatePrereveal(tempMetadata, _edition, _prefixData, dateTime);
   attributesList = [];
   return tempMetadata;
 };
+
+const generatePrereveal = (_metadata, _edition, _prefixData, _dateTime) => {
+  const { _prefix, _offset } = _prefixData;
+  let background = _metadata.attributes.find(attr => attr.trait_type == "Background").value;
+  let prereveal = backgroundMapping[background] || backgroundMapping.default;
+  let tempMetadata = {
+    name: `${_prefix ? _prefix + " " : ""}#${_edition - _offset}`,
+    description: PrerevealDescription,
+    image: `${prerevealBaseUri}/${_edition}${".gif"}`,
+    edition: _edition,
+    date: _dateTime,
+    ...extraMetadata,
+    attributes: [
+      {
+        trait_type: "Special Trait",
+        value: prereveal
+      }
+    ]
+  };
+  prereveal_meta.push(tempMetadata);
+  prereveal_imgs.push({
+    image: `${prereveal}.gif`,
+    edition: _edition
+  })
+}
 
 const addAttributes = (_element) => {
   let selectedElement = _element.layer;
@@ -722,6 +755,20 @@ const saveMetaDataSingleFile = (_editionCount, _buildDir) => {
     JSON.stringify(metadata, null, 2)
   );
 };
+const savePrerevealSingleFile = (_editionCount, _buildDir) => {
+  let metadata = prereveal_meta.find((meta) => meta.edition == _editionCount);
+  let background = prereveal_imgs.find((img) => img.edition == _editionCount).image;
+  debugLogs
+    ? console.log(
+        `Writing prereveal metadata for ${_editionCount}: ${JSON.stringify(metadata)}`
+      )
+    : null;
+  fs.writeFileSync(
+    `${_buildDir}/prereveal-json/${_editionCount}.json`,
+    JSON.stringify(metadata, null, 2)
+  );
+  fs.copyFileSync(`${prerevealDir}/${background}`, `${_buildDir}/prereveal-images/${_editionCount}.gif`);
+};
 
 function shuffle(array) {
   let currentIndex = array.length,
@@ -820,6 +867,7 @@ const outputFiles = (
   });
 
   saveMetaDataSingleFile(abstractedIndexes[0], _buildDir);
+  savePrerevealSingleFile(abstractedIndexes[0], _buildDir);
   console.log(chalk.cyan(`Created edition: ${abstractedIndexes[0]}`));
 };
 
